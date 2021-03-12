@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:simple_dri3ble/models/shot_model.dart';
+import 'package:simple_dri3ble/pages/shot_page/shot_page.dart';
 
 class ShotListItem extends StatelessWidget {
   final ShotModel shotModel;
@@ -12,7 +13,7 @@ class ShotListItem extends StatelessWidget {
     return Container(
       margin: EdgeInsets.only(bottom: 15.0),
       child: InkWell(
-        onTap: () => print('on tap'),
+        onTap: () => detailShot(context),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -124,5 +125,10 @@ class ShotListItem extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void detailShot(BuildContext context) {
+    Navigator.push(context,
+        MaterialPageRoute(builder: (_) => ShotPage(shotModel: shotModel)));
   }
 }
