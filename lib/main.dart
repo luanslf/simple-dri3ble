@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:simple_dri3ble/pages/home_page/home_page.dart';
 import 'package:simple_dri3ble/pages/login_page/login_page.dart';
 
 void main() {
@@ -9,19 +10,34 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Simple Dribbble',
       theme: ThemeData(
         primarySwatch: Colors.blue,
+        accentColor: Color(0xFFFF0081),
         textTheme: TextTheme(
           button: TextStyle(color: Colors.white),
           headline3: TextStyle(color: Colors.black),
+          subtitle1: TextStyle(
+            color: Colors.black38,
+            fontWeight: FontWeight.w500,
+          ),
         ),
         buttonColor: Color(0xFFFF0081),
         backgroundColor: Colors.white,
+        appBarTheme: AppBarTheme(
+          color: Color(0xFFFF0081),
+          centerTitle: true,
+          textTheme: TextTheme(
+            headline5: TextStyle(color: Colors.white),
+          ),
+        ),
+        floatingActionButtonTheme: FloatingActionButtonThemeData(
+          backgroundColor: Color(0xFFFF0081),
+        ),
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       debugShowCheckedModeBanner: false,
-      home: LoginPage(),
+      home: HomePage(),
     );
   }
 }
