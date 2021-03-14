@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:simple_dri3ble/models/shot_model.dart';
 import 'package:simple_dri3ble/pages/home_page/components/shot_list_item.dart';
 import 'package:simple_dri3ble/pages/upload_page/upload_page.dart';
+import 'package:simple_dri3ble/repositories/dribbble_shots_repository.dart';
+import 'package:simple_dri3ble/services/dio_http_client_service.dart';
+import 'package:simple_dri3ble/view_models/shots_view_model.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -9,38 +12,13 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  ShotModel shotModelExample;
-  List<ShotModel> _shots = List<ShotModel>();
+  final ShotsViewModel _shotsViewModel =
+      ShotsViewModel(DribbbleShotsRepository(DioHttpClientService()));
 
   @override
   void initState() {
     super.initState();
-    shotModelExample = ShotModel.fromJson({
-      "id": 471756,
-      "title": "Sasquatch",
-      "description":
-          "<p>Quick, messy, five minute sketch of something that might become a fictional something.</p>",
-      "images": {
-        "hidpi": "https://picsum.photos/id/1/300/200",
-        "normal": "https://picsum.photos/700/500",
-        "teaser": "https://picsum.photos/200/300"
-      },
-      "published_at": "2012-03-15T01:52:33Z",
-      "updated_at": "2012-03-15T02:12:57Z",
-      "tags": ["fiction", "sasquatch", "sketch", "wip"],
-      "attachments": [
-        {
-          "id": 206165,
-          "url": "https://picsum.photos/id/1/300/200",
-          "thumbnail_url": "https://picsum.photos/id/1/300/200",
-          "size": 116375,
-          "content_type": "image/jpeg",
-          "created_at": "2014-02-07T16:35:09Z"
-        }
-      ],
-      "low_profile": false
-    });
-    _shots = [shotModelExample];
+    _shotsViewModel.getShots();
   }
 
   @override
@@ -62,12 +40,25 @@ class _HomePageState extends State<HomePage> {
         onPressed: goToUploadPage,
         child: Icon(Icons.add),
       ),
-      body: ListView.builder(
-        itemCount: _shots.length,
-        physics: BouncingScrollPhysics(),
-        padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
-        itemBuilder: (context, index) {
-          return ShotListItem(shotModel: _shots[index]);
+      body: ValueListenableBuilder<List<ShotModel>>(
+        valueListenable: _shotsViewModel.shots,
+        builder: (_, shots, __) {
+          if (shots == null) return Center(child: CircularProgressIndicator());
+          if (shots.isEmpty) {
+            return Container(
+              alignment: Alignment.center,
+              child: Text(
+                'Nenhuma postagem encontrada',
+                style: Theme.of(context).textTheme.headline5,
+              ),
+            );
+          }
+          return ListView(
+            shrinkWrap: true,
+            physics: ClampingScrollPhysics(),
+            padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
+            children: shots.map((e) => ShotListItem(shotModel: e)).toList(),
+          );
         },
       ),
     );
