@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:simple_dri3ble/models/shot_model.dart';
 import 'package:simple_dri3ble/pages/home_page/components/shot_list_item.dart';
+import 'package:simple_dri3ble/pages/upload_page/upload_page.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -58,7 +59,7 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => {},
+        onPressed: goToUploadPage,
         child: Icon(Icons.add),
       ),
       body: ListView.builder(
@@ -70,5 +71,9 @@ class _HomePageState extends State<HomePage> {
         },
       ),
     );
+  }
+
+  void goToUploadPage() {
+    Navigator.push(context, MaterialPageRoute(builder: (_) => UploadPage()));
   }
 }

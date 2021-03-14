@@ -17,6 +17,7 @@ class MyApp extends StatelessWidget {
         textTheme: TextTheme(
           button: TextStyle(color: Colors.white),
           headline3: TextStyle(color: Colors.black),
+          headline6: TextStyle(color: Colors.black38),
           subtitle1: TextStyle(
             color: Colors.black38,
             fontWeight: FontWeight.w500,
@@ -31,6 +32,8 @@ class MyApp extends StatelessWidget {
             headline5: TextStyle(color: Colors.white),
           ),
         ),
+        focusColor: Color(0xFFFF0081),
+        disabledColor: Colors.black12,
         floatingActionButtonTheme: FloatingActionButtonThemeData(
           backgroundColor: Color(0xFFFF0081),
         ),
