@@ -1,7 +1,8 @@
 import 'dart:async';
 
 class UploadShotViewModel {
-  final StreamController<bool> _isUploading = StreamController<bool>();
+  final StreamController<bool> _isUploading =
+      StreamController<bool>.broadcast();
 
   Sink<bool> get isUploadingInput => _isUploading.sink;
   Stream<bool> get isUploadingOutput => _isUploading.stream;

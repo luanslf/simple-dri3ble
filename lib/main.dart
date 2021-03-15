@@ -21,6 +21,7 @@ class MyApp extends StatelessWidget {
             fontWeight: FontWeight.w500,
           ),
         ),
+        iconTheme: IconThemeData(color: Colors.white),
         textTheme: TextTheme(
           button: TextStyle(color: Colors.white),
           headline3: TextStyle(color: Colors.black),

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:simple_dri3ble/models/shot_model.dart';
+import 'package:simple_dri3ble/pages/upload_page/components/remove_shot_image_button.dart';
 import 'package:simple_dri3ble/pages/upload_page/components/shot_description_text_form_field.dart';
 import 'package:simple_dri3ble/pages/upload_page/components/shot_title_text_form_field.dart';
 import 'package:simple_dri3ble/pages/upload_page/components/upload_button.dart';
-import 'package:simple_dri3ble/pages/upload_page/components/upload_page_image_thumbnail.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:simple_dri3ble/view_models/upload_shot_view_model.dart';
 
@@ -14,20 +14,16 @@ class UploadPage extends StatefulWidget {
 
 class _UploadPageState extends State<UploadPage> {
   ShotModel _shotModel;
-  List<String> _imagesPath;
-  ValueNotifier<int> _imagesPathLengthListenable;
   GlobalKey<FormState> _formKey;
-  UploadShotViewModel _uploadShotViewModel;
   GlobalKey<ScaffoldState> _scaffoldKey;
+  UploadShotViewModel _uploadShotViewModel;
 
   @override
   void initState() {
     super.initState();
     _shotModel = ShotModel();
-    _imagesPath = List<String>();
     _formKey = GlobalKey<FormState>();
     _scaffoldKey = GlobalKey<ScaffoldState>();
-    _imagesPathLengthListenable = ValueNotifier<int>(0);
     _uploadShotViewModel = UploadShotViewModel();
   }
 
@@ -50,17 +46,41 @@ class _UploadPageState extends State<UploadPage> {
           shrinkWrap: true,
           padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
           children: [
-            ValueListenableBuilder<int>(
-              valueListenable: _imagesPathLengthListenable,
-              builder: (_, length, __) {
-                if (length < 3) {
-                  return Container(
-                    height: MediaQuery.of(context).size.height / 5,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10.0),
-                      border: Border.all(width: 1.5, color: Colors.black26),
-                    ),
-                    child: InkWell(
+            Container(
+              alignment: Alignment.center,
+              height: MediaQuery.of(context).size.height / 3,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10.0),
+                border: Border.all(width: 1.5, color: Colors.black26),
+              ),
+              child: _shotModel.images.isNotEmpty
+                  ? Stack(
+                      fit: StackFit.expand,
+                      children: [
+                        Image.asset(
+                          _shotModel.images.first,
+                          fit: BoxFit.cover,
+                        ),
+                        Align(
+                          alignment: Alignment.bottomRight,
+                          child: Container(
+                            margin: EdgeInsets.all(10.0),
+                            child: StreamBuilder<bool>(
+                              stream: _uploadShotViewModel.isUploadingOutput,
+                              builder: (_, snapshot) {
+                                return RemoveShotImageButton(
+                                  enabled: snapshot.data != null
+                                      ? !snapshot.data
+                                      : true,
+                                  onPressed: handleRemoveShotImageButtonPressed,
+                                );
+                              },
+                            ),
+                          ),
+                        )
+                      ],
+                    )
+                  : InkWell(
                       onTap: selectImage,
                       child: Center(
                         child: Text(
@@ -70,48 +90,6 @@ class _UploadPageState extends State<UploadPage> {
                         ),
                       ),
                     ),
-                  );
-                }
-                return Container();
-              },
-            ),
-            ValueListenableBuilder<int>(
-              valueListenable: _imagesPathLengthListenable,
-              builder: (_, length, __) {
-                if (length == 0) return Container();
-                return Container(
-                  margin: EdgeInsets.only(top: 10.0),
-                  constraints: BoxConstraints(
-                      maxHeight: MediaQuery.of(context).size.height / 8),
-                  child: ListView(
-                    shrinkWrap: true,
-                    scrollDirection: Axis.horizontal,
-                    children: _imagesPath
-                        .map(
-                          (e) => Container(
-                            margin: EdgeInsets.symmetric(horizontal: 5.0),
-                            child: UploadPageImageThumbnail(imagePath: e),
-                          ),
-                        )
-                        .toList(),
-                  ),
-                );
-              },
-            ),
-            ValueListenableBuilder<int>(
-              valueListenable: _imagesPathLengthListenable,
-              builder: (_, length, __) {
-                return Container(
-                  alignment: Alignment.centerRight,
-                  margin: EdgeInsets.only(top: 10.0),
-                  child: Text(
-                    '$length / 3',
-                    style: Theme.of(context).textTheme.subtitle1.copyWith(
-                          color: length != 3 ? Colors.red : Colors.black38,
-                        ),
-                  ),
-                );
-              },
             ),
             Form(
               key: _formKey,
@@ -121,16 +99,30 @@ class _UploadPageState extends State<UploadPage> {
                 children: [
                   Container(
                     margin: EdgeInsets.only(top: 20.0),
-                    child: ShotTitleTextFormField(
-                      onSaved: shotTitleTextFormFieldOnSaved,
-                      validator: shotTitleTextFormFieldValidator,
+                    child: StreamBuilder<bool>(
+                      stream: _uploadShotViewModel.isUploadingOutput,
+                      builder: (_, snapshot) {
+                        return ShotTitleTextFormField(
+                          enabled:
+                              snapshot.data != null ? !snapshot.data : true,
+                          onSaved: shotTitleTextFormFieldOnSaved,
+                          validator: shotTitleTextFormFieldValidator,
+                        );
+                      },
                     ),
                   ),
                   Container(
                     margin: EdgeInsets.only(top: 20.0),
-                    child: ShotDescriptionTextFormField(
-                      onSaved: shotDescriptionTextFormFieldOnSaved,
-                      validator: shotDescriptionTextFormFieldValidator,
+                    child: StreamBuilder<bool>(
+                      stream: _uploadShotViewModel.isUploadingOutput,
+                      builder: (_, snapshot) {
+                        return ShotDescriptionTextFormField(
+                          enabled:
+                              snapshot.data != null ? !snapshot.data : true,
+                          onSaved: shotDescriptionTextFormFieldOnSaved,
+                          validator: shotDescriptionTextFormFieldValidator,
+                        );
+                      },
                     ),
                   ),
                 ],
@@ -184,9 +176,7 @@ class _UploadPageState extends State<UploadPage> {
     PickedFile pickedFile = await picker.getImage(source: ImageSource.gallery);
     if (pickedFile == null) return;
     setState(() {
-      _imagesPath.add(pickedFile.path);
-
-      _imagesPathLengthListenable.value = _imagesPath.length;
+      _shotModel.images.insert(0, pickedFile.path);
     });
   }
 
@@ -216,11 +206,17 @@ class _UploadPageState extends State<UploadPage> {
     }
   }
 
+  void handleRemoveShotImageButtonPressed() {
+    setState(() {
+      _shotModel.images.removeAt(0);
+    });
+  }
+
   void showInvalidSelectedImagesQuantityMessage() {
     _scaffoldKey.currentState.showSnackBar(
       SnackBar(
         content: Text(
-          'Selecione três imagens',
+          'Selecione uma imagem',
           style: Theme.of(context).snackBarTheme.contentTextStyle,
         ),
         backgroundColor: Theme.of(context).snackBarTheme.backgroundColor,
@@ -230,7 +226,7 @@ class _UploadPageState extends State<UploadPage> {
 
   bool isValidForm() {
     if (_formKey.currentState.validate()) {
-      if (_imagesPath.length != 3) {
+      if (_shotModel.images.isEmpty) {
         showInvalidSelectedImagesQuantityMessage();
         return false;
       }

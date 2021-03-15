@@ -3,8 +3,12 @@ import 'package:flutter/material.dart';
 class ShotTitleTextFormField extends StatelessWidget {
   final String Function(String) validator;
   final void Function(String) onSaved;
+  final bool enabled;
 
-  ShotTitleTextFormField({@required this.validator, @required this.onSaved});
+  ShotTitleTextFormField(
+      {@required this.validator,
+      @required this.onSaved,
+      @required this.enabled});
 
   @override
   Widget build(BuildContext context) {
@@ -23,6 +27,7 @@ class ShotTitleTextFormField extends StatelessWidget {
           TextFormField(
             onSaved: onSaved,
             validator: validator,
+            enabled: enabled,
             decoration: InputDecoration(
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10.0),

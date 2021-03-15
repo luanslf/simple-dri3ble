@@ -5,7 +5,9 @@ class ShotModel {
   String _publishedAt;
   List<String> _images;
 
-  ShotModel();
+  ShotModel() {
+    _images = List<String>();
+  }
 
   ShotModel.fromJson(Map<String, dynamic> json) {
     _id = json['id'];
