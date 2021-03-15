@@ -40,25 +40,25 @@ class ShotListItem extends StatelessWidget {
                           child: CircularProgressIndicator(),
                         );
                       },
-                      imageUrl: shotModel.images.hidpi,
+                      imageUrl: shotModel.images.first,
                       height: MediaQuery.of(context).size.height / 3,
                     ),
-                    Align(
+                    /* Align(
                       alignment: Alignment.topRight,
                       child: ShotListItemImageThumbnail(
                         imageUrl: shotModel.images.normal,
                         verticalMargin: 28.0,
                         horizontalMargin: 14.0,
                       ),
-                    ),
-                    Align(
+                    ), */
+                    /* Align(
                       alignment: Alignment.topRight,
                       child: ShotListItemImageThumbnail(
                         imageUrl: shotModel.images.teaser,
                         verticalMargin: 20.0,
                         horizontalMargin: 20.0,
                       ),
-                    ),
+                    ), */
                   ],
                 ),
               ),

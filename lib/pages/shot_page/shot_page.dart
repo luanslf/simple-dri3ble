@@ -16,18 +16,18 @@ class ShotPage extends StatefulWidget {
 
 class _ShotPageState extends State<ShotPage> {
   ShotModel _shotModel;
-  List<String> _imagesUrl;
+  //List<String> _imagesUrl;
   CarouselController _carouselController;
 
   @override
   void initState() {
     super.initState();
     _shotModel = widget.shotModel;
-    _imagesUrl = <String>[
+    /* _imagesUrl = <String>[
       _shotModel.images.hidpi,
       _shotModel.images.normal,
       _shotModel.images.teaser
-    ];
+    ]; */
     _carouselController = CarouselController();
   }
 
@@ -47,9 +47,11 @@ class _ShotPageState extends State<ShotPage> {
               options: CarouselOptions(
                 enlargeCenterPage: false,
                 viewportFraction: 1.0,
+                autoPlay: true,
+                autoPlayInterval: Duration(seconds: 2),
                 height: MediaQuery.of(context).size.height / 2.5,
               ),
-              items: _imagesUrl.map((e) {
+              items: _shotModel.images.map((e) {
                 return Builder(
                   builder: (BuildContext context) {
                     return ClipRRect(
@@ -68,7 +70,7 @@ class _ShotPageState extends State<ShotPage> {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: _imagesUrl
+              children: _shotModel.images
                   .map(
                     (e) => Expanded(
                       child: Container(
@@ -76,7 +78,7 @@ class _ShotPageState extends State<ShotPage> {
                         child: ShotImageThumbnail(
                           imageUrl: e,
                           onTap: () => _selectImage(
-                            index: _imagesUrl.indexOf(e),
+                            index: _shotModel.images.indexOf(e),
                           ),
                         ),
                       ),
