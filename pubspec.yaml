@@ -32,6 +32,7 @@ dependencies:
   carousel_slider: ^3.0.0
   image_picker: ^0.6.7+22
   dio: ^3.0.10
+  http_parser: ^3.1.4
 
 dev_dependencies:
   flutter_test:

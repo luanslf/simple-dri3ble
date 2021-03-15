@@ -12,7 +12,7 @@ class ShotModel {
   ShotModel.fromJson(Map<String, dynamic> json) {
     _id = json['id'];
     _title = json['title'];
-    _description = json['description'];
+    _description = json['description'] ?? '';
     _publishedAt = json['published_at'];
     Map<String, dynamic> imagesMap = json['images'];
     _images = List.from(imagesMap.values.where((e) => e != null));

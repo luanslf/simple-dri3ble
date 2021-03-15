@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:simple_dri3ble/models/shot_model.dart';
 import 'package:simple_dri3ble/pages/upload_page/components/remove_shot_image_button.dart';
@@ -5,6 +6,8 @@ import 'package:simple_dri3ble/pages/upload_page/components/shot_description_tex
 import 'package:simple_dri3ble/pages/upload_page/components/shot_title_text_form_field.dart';
 import 'package:simple_dri3ble/pages/upload_page/components/upload_button.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:simple_dri3ble/repositories/dribbble_shots_repository.dart';
+import 'package:simple_dri3ble/services/dio_http_client_service.dart';
 import 'package:simple_dri3ble/view_models/upload_shot_view_model.dart';
 
 class UploadPage extends StatefulWidget {
@@ -13,18 +16,22 @@ class UploadPage extends StatefulWidget {
 }
 
 class _UploadPageState extends State<UploadPage> {
-  ShotModel _shotModel;
-  GlobalKey<FormState> _formKey;
-  GlobalKey<ScaffoldState> _scaffoldKey;
-  UploadShotViewModel _uploadShotViewModel;
+  ShotModel _shotModel = ShotModel();
+  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  UploadShotViewModel _uploadShotViewModel =
+      UploadShotViewModel(DribbbleShotsRepository(DioHttpClientService()));
 
   @override
   void initState() {
     super.initState();
-    _shotModel = ShotModel();
-    _formKey = GlobalKey<FormState>();
-    _scaffoldKey = GlobalKey<ScaffoldState>();
-    _uploadShotViewModel = UploadShotViewModel();
+    _uploadShotViewModel.isUploadedOutput.listen((uploaded) {
+      if (uploaded) {
+        Navigator.pop(context);
+      } else {
+        showNotUploadedShotMessage();
+      }
+    });
   }
 
   @override
@@ -57,8 +64,8 @@ class _UploadPageState extends State<UploadPage> {
                   ? Stack(
                       fit: StackFit.expand,
                       children: [
-                        Image.asset(
-                          _shotModel.images.first,
+                        Image.file(
+                          File(_shotModel.images.first),
                           fit: BoxFit.cover,
                         ),
                         Align(
@@ -202,7 +209,7 @@ class _UploadPageState extends State<UploadPage> {
     bool validForm = isValidForm();
     if (validForm) {
       _formKey.currentState.save();
-      _uploadShotViewModel.upload(true);
+      _uploadShotViewModel.isUploadedInput.add(_shotModel);
     }
   }
 
@@ -217,6 +224,18 @@ class _UploadPageState extends State<UploadPage> {
       SnackBar(
         content: Text(
           'Selecione uma imagem',
+          style: Theme.of(context).snackBarTheme.contentTextStyle,
+        ),
+        backgroundColor: Theme.of(context).snackBarTheme.backgroundColor,
+      ),
+    );
+  }
+
+  void showNotUploadedShotMessage() {
+    _scaffoldKey.currentState.showSnackBar(
+      SnackBar(
+        content: Text(
+          'Ops! A imagem deve ter a dimensão 400x300.',
           style: Theme.of(context).snackBarTheme.contentTextStyle,
         ),
         backgroundColor: Theme.of(context).snackBarTheme.backgroundColor,

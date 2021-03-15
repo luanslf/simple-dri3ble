@@ -16,8 +16,8 @@ class _HomePageState extends State<HomePage> {
       ShotsViewModel(DribbbleShotsRepository(DioHttpClientService()));
 
   @override
-  void initState() {
-    super.initState();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
     _shotsViewModel.getShots();
   }
 

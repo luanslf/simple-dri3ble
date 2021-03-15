@@ -1,3 +1,6 @@
+import 'dart:io';
+import 'package:dio/dio.dart';
+import 'package:http_parser/http_parser.dart';
 import 'package:simple_dri3ble/interfaces/repositories/shots_respository_interface.dart';
 import 'package:simple_dri3ble/interfaces/services/http_client_service_interface.dart';
 import 'package:simple_dri3ble/models/shot_model.dart';
@@ -19,5 +22,32 @@ class DribbbleShotsRepository implements IShotsRepository {
       print(e);
     }
     return shots;
+  }
+
+  @override
+  Future<bool> createShot(ShotModel shotModel, String accessToken) async {
+    bool created;
+    String url = 'https://api.dribbble.com/v2/shots';
+    Map<String, String> headers = {'Authorization': 'Bearer $accessToken'};
+    File file = File(shotModel.images.first);
+    String fileName = file.path.split('/').last;
+    FormData data = FormData.fromMap({
+      'title': shotModel.title,
+      'description': shotModel.description,
+      'image': await MultipartFile.fromFile(
+        file.path,
+        filename: fileName,
+        contentType: MediaType('image', 'jpeg'),
+      ),
+    });
+    try {
+      final responseData = await httpClient.post(url, data, headers: headers);
+      print('responseData: $responseData');
+      created = true;
+    } catch (e) {
+      print(e);
+      created = false;
+    }
+    return created;
   }
 }

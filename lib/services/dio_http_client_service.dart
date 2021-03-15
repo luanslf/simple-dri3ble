@@ -8,4 +8,18 @@ class DioHttpClientService implements IHttpClientService {
         await Dio().get(url, options: Options(headers: headers));
     return response.data;
   }
+
+  @override
+  Future<dynamic> post(String url, dynamic data,
+      {Map<String, String> headers}) async {
+    Response response = await Dio().post(
+      url,
+      data: data,
+      options: Options(
+        headers: headers,
+        contentType: Headers.formUrlEncodedContentType,
+      ),
+    );
+    return response.data;
+  }
 }
