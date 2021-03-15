@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:simple_dri3ble/models/shot_model.dart';
 import 'package:simple_dri3ble/pages/upload_page/components/shot_description_text_form_field.dart';
 import 'package:simple_dri3ble/pages/upload_page/components/shot_title_text_form_field.dart';
 import 'package:simple_dri3ble/pages/upload_page/components/upload_button.dart';
 import 'package:simple_dri3ble/pages/upload_page/components/upload_page_image_thumbnail.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:simple_dri3ble/view_models/upload_shot_view_model.dart';
 
 class UploadPage extends StatefulWidget {
   @override
@@ -11,16 +13,28 @@ class UploadPage extends StatefulWidget {
 }
 
 class _UploadPageState extends State<UploadPage> {
+  ShotModel _shotModel;
   List<String> _imagesPath;
-  ValueNotifier<bool> _validFormListenable;
   ValueNotifier<int> _imagesPathLengthListenable;
+  GlobalKey<FormState> _formKey;
+  UploadShotViewModel _uploadShotViewModel;
+  GlobalKey<ScaffoldState> _scaffoldKey;
 
   @override
   void initState() {
     super.initState();
+    _shotModel = ShotModel();
     _imagesPath = List<String>();
-    _validFormListenable = ValueNotifier<bool>(false);
+    _formKey = GlobalKey<FormState>();
+    _scaffoldKey = GlobalKey<ScaffoldState>();
     _imagesPathLengthListenable = ValueNotifier<int>(0);
+    _uploadShotViewModel = UploadShotViewModel();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _uploadShotViewModel.dispose();
   }
 
   @override
@@ -28,6 +42,7 @@ class _UploadPageState extends State<UploadPage> {
     return WillPopScope(
       onWillPop: _onWillPop,
       child: Scaffold(
+        key: _scaffoldKey,
         appBar: AppBar(
           title: Text('Upload'),
         ),
@@ -99,27 +114,39 @@ class _UploadPageState extends State<UploadPage> {
               },
             ),
             Form(
+              key: _formKey,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Container(
                     margin: EdgeInsets.only(top: 20.0),
-                    child: ShotTitleTextFormField(),
+                    child: ShotTitleTextFormField(
+                      onSaved: shotTitleTextFormFieldOnSaved,
+                      validator: shotTitleTextFormFieldValidator,
+                    ),
                   ),
                   Container(
                     margin: EdgeInsets.only(top: 20.0),
-                    child: ShotDescriptionTextFormField(),
+                    child: ShotDescriptionTextFormField(
+                      onSaved: shotDescriptionTextFormFieldOnSaved,
+                      validator: shotDescriptionTextFormFieldValidator,
+                    ),
                   ),
                 ],
               ),
             ),
             Container(
               margin: EdgeInsets.only(top: 50.0),
-              child: ValueListenableBuilder<bool>(
-                valueListenable: _validFormListenable,
-                builder: (_, valid, __) {
-                  return UploadButton(enabled: valid);
+              child: StreamBuilder<bool>(
+                initialData: false,
+                stream: _uploadShotViewModel.isUploadingOutput,
+                builder: (_, snapshot) {
+                  bool enabled = !snapshot.data;
+                  return UploadButton(
+                    enabled: enabled,
+                    onPressed: handleUploadButtonPressed,
+                  );
                 },
               ),
             ),
@@ -158,7 +185,57 @@ class _UploadPageState extends State<UploadPage> {
     if (pickedFile == null) return;
     setState(() {
       _imagesPath.add(pickedFile.path);
+
       _imagesPathLengthListenable.value = _imagesPath.length;
     });
+  }
+
+  void shotTitleTextFormFieldOnSaved(String value) {
+    _shotModel.title = value;
+  }
+
+  void shotDescriptionTextFormFieldOnSaved(String value) {
+    _shotModel.description = value;
+  }
+
+  String shotTitleTextFormFieldValidator(String value) {
+    if (value.isEmpty) return 'Campo obrigatório';
+    return null;
+  }
+
+  String shotDescriptionTextFormFieldValidator(String value) {
+    if (value.isEmpty) return 'Campo obrigatório';
+    return null;
+  }
+
+  void handleUploadButtonPressed() {
+    bool validForm = isValidForm();
+    if (validForm) {
+      _formKey.currentState.save();
+      _uploadShotViewModel.upload(true);
+    }
+  }
+
+  void showInvalidSelectedImagesQuantityMessage() {
+    _scaffoldKey.currentState.showSnackBar(
+      SnackBar(
+        content: Text(
+          'Selecione três imagens',
+          style: Theme.of(context).snackBarTheme.contentTextStyle,
+        ),
+        backgroundColor: Theme.of(context).snackBarTheme.backgroundColor,
+      ),
+    );
+  }
+
+  bool isValidForm() {
+    if (_formKey.currentState.validate()) {
+      if (_imagesPath.length != 3) {
+        showInvalidSelectedImagesQuantityMessage();
+        return false;
+      }
+      return true;
+    }
+    return false;
   }
 }

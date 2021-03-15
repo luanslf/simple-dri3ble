@@ -14,6 +14,13 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
         accentColor: Color(0xFFFF0081),
+        snackBarTheme: SnackBarThemeData(
+          backgroundColor: Color(0xFFFF0081),
+          contentTextStyle: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
         textTheme: TextTheme(
           button: TextStyle(color: Colors.white),
           headline3: TextStyle(color: Colors.black),

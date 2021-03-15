@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 
 class ShotDescriptionTextFormField extends StatelessWidget {
+  final String Function(String) validator;
+  final void Function(String) onSaved;
+
+  ShotDescriptionTextFormField(
+      {@required this.validator, @required this.onSaved});
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -17,6 +23,8 @@ class ShotDescriptionTextFormField extends StatelessWidget {
           ),
           TextFormField(
             maxLines: 5,
+            onSaved: onSaved,
+            validator: validator,
             decoration: InputDecoration(
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10.0),

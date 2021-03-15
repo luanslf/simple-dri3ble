@@ -12,6 +12,8 @@ class ShotModel {
   List<AttachmentModel> _attachments;
   bool _lowProfile;
 
+  ShotModel();
+
   ShotModel.fromJson(Map<String, dynamic> json) {
     _id = json['id'];
     _title = json['title'];
