@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:simple_dri3ble/pages/authorizer_page/authorizer_page.dart';
 import 'package:simple_dri3ble/pages/login_page/components/login_button.dart';
+import 'package:simple_dri3ble/view_models/login_view_model.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -7,6 +9,8 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final LoginViewModel _loginViewModel = LoginViewModel();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,11 +28,19 @@ class _LoginPageState extends State<LoginPage> {
                 style: Theme.of(context).textTheme.headline3,
               ),
             ),
-            LoginButton(),
+            LoginButton(onPressed: authorizeFromWebView),
           ],
         ),
       ),
       backgroundColor: Theme.of(context).backgroundColor,
     );
+  }
+
+  Future<void> authorizeFromWebView() async {
+    String code = await Navigator.push(
+        context, MaterialPageRoute(builder: (_) => AuthorizerPage()));
+    if (code != null) {
+      print(code);
+    }
   }
 }
