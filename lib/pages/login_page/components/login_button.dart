@@ -2,14 +2,16 @@ import 'package:flutter/material.dart';
 
 class LoginButton extends StatelessWidget {
   final Function onPressed;
+  final bool enabled;
 
-  LoginButton({@required this.onPressed});
+  LoginButton({@required this.enabled, @required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
     return MaterialButton(
-      onPressed: onPressed,
+      onPressed: enabled ? onPressed : null,
       color: Theme.of(context).buttonColor,
+      disabledColor: Theme.of(context).disabledColor,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
       padding: EdgeInsets.symmetric(vertical: 10.0),
       child: Text(
