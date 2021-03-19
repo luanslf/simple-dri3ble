@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:simple_dri3ble/controllers/app_controller.dart';
 import 'package:simple_dri3ble/models/shot_model.dart';
 import 'package:simple_dri3ble/pages/home_page/components/shot_list_item.dart';
 import 'package:simple_dri3ble/pages/upload_page/upload_page.dart';
@@ -32,7 +33,8 @@ class _HomePageState extends State<HomePage> {
         actions: [
           IconButton(
             icon: Icon(Icons.exit_to_app),
-            onPressed: () => {},
+            onPressed: () => AppController.instance.appViewModel.appStore
+                .setLoginModel(null),
           ),
         ],
       ),

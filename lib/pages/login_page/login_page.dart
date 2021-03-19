@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:simple_dri3ble/controllers/app_controller.dart';
 import 'package:simple_dri3ble/models/request_login_model.dart';
 import 'package:simple_dri3ble/pages/authorizer_page/authorizer_page.dart';
 import 'package:simple_dri3ble/pages/home_page/home_page.dart';
@@ -21,7 +22,9 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
-    _loginViewModel.isAuthenticatedOutput.listen((loginModel) {
+    _loginViewModel.isAuthenticatedOutput
+        .listen(AppController.instance.appViewModel.appStore.setLoginModel);
+    /* _loginViewModel.isAuthenticatedOutput.listen((loginModel) {
       if (loginModel != null) {
         Navigator.pushReplacement(
           context,
@@ -30,7 +33,7 @@ class _LoginPageState extends State<LoginPage> {
           ),
         );
       }
-    });
+    }); */
   }
 
   @override
