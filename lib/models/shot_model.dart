@@ -18,6 +18,16 @@ class ShotModel {
     _images = List.from(imagesMap.values.where((e) => e != null));
   }
 
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this._id;
+    data['title'] = this._title;
+    data['description'] = this._description;
+    data['published_at'] = this._publishedAt;
+    data['images'] = Map.fromIterable(this._images);
+    return data;
+  }
+
   int get id => _id;
   String get title => _title;
   set title(String title) => _title = title;

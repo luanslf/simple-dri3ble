@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-//import 'package:simple_dri3ble/pages/home_page/home_page.dart';
-//import 'package:simple_dri3ble/pages/login_page/login_page.dart';
 import 'package:simple_dri3ble/pages/root_page/root_page.dart';
 
 void main() {
@@ -50,8 +48,6 @@ class MyApp extends StatelessWidget {
       ),
       debugShowCheckedModeBanner: false,
       home: RootPage(),
-      //home: HomePage(),
-      //home: LoginPage(),
     );
   }
 }

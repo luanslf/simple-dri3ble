@@ -1,10 +1,16 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:simple_dri3ble/controllers/app_controller.dart';
+import 'package:simple_dri3ble/interfaces/services/local_storage_service_interface.dart';
+import 'package:simple_dri3ble/models/login_model.dart';
 import 'package:simple_dri3ble/models/shot_model.dart';
 import 'package:simple_dri3ble/pages/home_page/components/shot_list_item.dart';
 import 'package:simple_dri3ble/pages/upload_page/upload_page.dart';
 import 'package:simple_dri3ble/repositories/dribbble_shots_repository.dart';
 import 'package:simple_dri3ble/services/dio_http_client_service.dart';
+import 'package:simple_dri3ble/services/shared_preferences_local_storage_service.dart';
+import 'package:simple_dri3ble/utils/constants.dart';
 import 'package:simple_dri3ble/view_models/shots_view_model.dart';
 
 class HomePage extends StatefulWidget {
@@ -13,13 +19,16 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final ShotsViewModel _shotsViewModel =
-      ShotsViewModel(DribbbleShotsRepository(DioHttpClientService()));
+  final ShotsViewModel _shotsViewModel = ShotsViewModel(
+    Constants.shotsStorageKey,
+    DribbbleShotsRepository(DioHttpClientService()),
+    SharedPreferencesLocalStorageService(),
+  );
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _shotsViewModel.getShots();
+    loadShots();
   }
 
   @override
@@ -33,8 +42,7 @@ class _HomePageState extends State<HomePage> {
         actions: [
           IconButton(
             icon: Icon(Icons.exit_to_app),
-            onPressed: () => AppController.instance.appViewModel.appStore
-                .setLoginModel(null),
+            onPressed: /* testLocalStorage */ handleExitButtonPressed,
           ),
         ],
       ),
@@ -66,7 +74,27 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  void loadShots() {
+    String accessToken = AppController.instance.accessToken;
+    _shotsViewModel.getShots(accessToken);
+  }
+
   void goToUploadPage() {
     Navigator.push(context, MaterialPageRoute(builder: (_) => UploadPage()));
+  }
+
+  void handleExitButtonPressed() {
+    AppController.instance.appViewModel.signOut();
+  }
+
+  Future<void> testLocalStorage() async {
+    ILocalStorageService storageService =
+        AppController.instance.appViewModel.localStorageService;
+    //print(await storageService.put('names', json.encode(["luan", "ferreira"])));
+    //print(json.decode(await storageService.get(Constants.shotsStorageKey)));
+    String json = await storageService.get(Constants.loginStorageKey);
+    LoginModel loginModel = LoginModel.fromJson(jsonDecode(json));
+    print(loginModel);
+    //print(await storageService.delete('name'));
   }
 }

@@ -6,9 +6,10 @@ import 'package:simple_dri3ble/pages/home_page/home_page.dart';
 import 'package:simple_dri3ble/pages/login_page/login_page.dart';
 
 class RootPage extends StatelessWidget {
+  final appViewModel = AppController.instance.appViewModel;
+
   @override
   Widget build(BuildContext context) {
-    final appViewModel = AppController.instance.appViewModel;
     return Scaffold(
       body: Observer(
         builder: (_) {
@@ -17,10 +18,20 @@ class RootPage extends StatelessWidget {
           return HomePage();
         },
       ),
-      floatingActionButton: FloatingActionButton(onPressed: () {
-        appViewModel.appStore.setLoginModel(LoginModel.fromJson(
-            {'access_token': 'token', 'token_type': 'type', 'scope': 'scope'}));
-      }),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          appViewModel.signIn(
+            LoginModel.fromJson(
+              {
+                'access_token':
+                    '25fb8f2ebb0105adf4cd57a681b348e095c580bff1cb7d478648351568fb5e9d',
+                'token_type': 'bearer',
+                'scope': 'public upload'
+              },
+            ),
+          );
+        },
+      ),
     );
   }
 }

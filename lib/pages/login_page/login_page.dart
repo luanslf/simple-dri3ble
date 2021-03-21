@@ -1,8 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:simple_dri3ble/controllers/app_controller.dart';
 import 'package:simple_dri3ble/models/request_login_model.dart';
 import 'package:simple_dri3ble/pages/authorizer_page/authorizer_page.dart';
-import 'package:simple_dri3ble/pages/home_page/home_page.dart';
 import 'package:simple_dri3ble/pages/login_page/components/login_button.dart';
 import 'package:simple_dri3ble/utils/constants.dart';
 import 'package:simple_dri3ble/view_models/login_view_model.dart';
@@ -16,24 +17,21 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  StreamSubscription _subscription;
   final LoginViewModel _loginViewModel =
       LoginViewModel(DribbbleShotsRepository(DioHttpClientService()));
 
   @override
   void initState() {
     super.initState();
-    _loginViewModel.isAuthenticatedOutput
-        .listen(AppController.instance.appViewModel.appStore.setLoginModel);
-    /* _loginViewModel.isAuthenticatedOutput.listen((loginModel) {
-      if (loginModel != null) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (_) => HomePage(),
-          ),
-        );
-      }
-    }); */
+    _subscription = _loginViewModel.isAuthenticatedOutput
+        .listen(AppController.instance.appViewModel.signIn);
+  }
+
+  @override
+  void dispose() {
+    _subscription.cancel();
+    super.dispose();
   }
 
   @override
