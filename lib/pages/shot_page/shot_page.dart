@@ -59,6 +59,12 @@ class _ShotPageState extends State<ShotPage> {
                       child: CachedNetworkImage(
                         imageUrl: e,
                         fit: BoxFit.fill,
+                        errorWidget: (context, url, error) {
+                          return Image.asset(
+                            'assets/images/picture.png',
+                            fit: BoxFit.contain,
+                          );
+                        },
                       ),
                     );
                   },

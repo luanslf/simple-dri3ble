@@ -19,8 +19,9 @@ class _UploadPageState extends State<UploadPage> {
   ShotModel _shotModel = ShotModel();
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  UploadShotViewModel _uploadShotViewModel =
-      UploadShotViewModel(DribbbleShotsRepository(DioHttpClientService()));
+  UploadShotViewModel _uploadShotViewModel = UploadShotViewModel(
+    DribbbleShotsRepository(DioHttpClientService()),
+  );
 
   @override
   void initState() {

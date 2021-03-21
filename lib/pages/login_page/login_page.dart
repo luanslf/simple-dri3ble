@@ -1,7 +1,7 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:simple_dri3ble/controllers/app_controller.dart';
+import 'package:simple_dri3ble/models/login_model.dart';
 import 'package:simple_dri3ble/models/request_login_model.dart';
 import 'package:simple_dri3ble/pages/authorizer_page/authorizer_page.dart';
 import 'package:simple_dri3ble/pages/login_page/components/login_button.dart';
@@ -18,8 +18,9 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   StreamSubscription _subscription;
-  final LoginViewModel _loginViewModel =
-      LoginViewModel(DribbbleShotsRepository(DioHttpClientService()));
+  final LoginViewModel _loginViewModel = LoginViewModel(
+    DribbbleShotsRepository(DioHttpClientService()),
+  );
 
   @override
   void initState() {
@@ -37,6 +38,25 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        actions: [
+          IconButton(
+            icon: Icon(Icons.person),
+            onPressed: () {
+              AppController.instance.appViewModel.signIn(
+                LoginModel.fromJson(
+                  {
+                    'access_token':
+                        '25fb8f2ebb0105adf4cd57a681b348e095c580bff1cb7d478648351568fb5e9d',
+                    'token_type': 'bearer',
+                    'scope': 'public upload'
+                  },
+                ),
+              );
+            },
+          )
+        ],
+      ),
       body: Container(
         padding: EdgeInsets.symmetric(horizontal: 40.0),
         child: Column(

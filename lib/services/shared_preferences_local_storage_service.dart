@@ -18,4 +18,9 @@ class SharedPreferencesLocalStorageService implements ILocalStorageService {
   Future<bool> delete(String key) async {
     return storageChannel.invokeMethod('delete', {'key': key});
   }
+
+  @override
+  Future<bool> clear() {
+    return storageChannel.invokeMethod('clear');
+  }
 }

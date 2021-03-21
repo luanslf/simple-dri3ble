@@ -18,6 +18,12 @@ class ShotImageThumbnail extends StatelessWidget {
           imageUrl: imageUrl,
           height: MediaQuery.of(context).size.height / 8,
           fit: BoxFit.fill,
+          errorWidget: (context, url, error) {
+            return Image.asset(
+              'assets/images/picture.png',
+              fit: BoxFit.contain,
+            );
+          },
         ),
       ),
     );

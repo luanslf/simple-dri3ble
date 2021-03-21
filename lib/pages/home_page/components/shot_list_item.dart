@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:simple_dri3ble/models/shot_model.dart';
 import 'package:simple_dri3ble/pages/components/shot_feedback.dart';
-import 'package:simple_dri3ble/pages/home_page/components/shot_list_item_image_thumbnail.dart';
 import 'package:simple_dri3ble/pages/shot_page/shot_page.dart';
 
 class ShotListItem extends StatelessWidget {
@@ -38,6 +37,12 @@ class ShotListItem extends StatelessWidget {
                         return Container(
                           alignment: Alignment.center,
                           child: CircularProgressIndicator(),
+                        );
+                      },
+                      errorWidget: (context, url, error) {
+                        return Image.asset(
+                          'assets/images/picture.png',
+                          fit: BoxFit.contain,
                         );
                       },
                       imageUrl: shotModel.images.first,

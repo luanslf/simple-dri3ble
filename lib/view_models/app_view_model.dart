@@ -12,7 +12,8 @@ class AppViewModel {
 
   Future<void> signOut() async {
     appStore.setLoginModel(null);
-    await localStorageService.delete(loginStorageKey);
+    await localStorageService.clear();
+    //await localStorageService.delete(loginStorageKey);
   }
 
   Future<void> signIn(LoginModel loginModel) async {
