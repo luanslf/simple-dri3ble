@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:simple_dri3ble/controllers/app_controller.dart';
+import 'package:simple_dri3ble/models/login_model.dart';
 import 'package:simple_dri3ble/models/request_login_model.dart';
 import 'package:simple_dri3ble/pages/authorizer_page/authorizer_page.dart';
 import 'package:simple_dri3ble/pages/login_page/components/login_button.dart';
@@ -37,7 +38,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      /* appBar: AppBar(
+      appBar: AppBar(
         actions: [
           IconButton(
             icon: Icon(Icons.person),
@@ -55,7 +56,7 @@ class _LoginPageState extends State<LoginPage> {
             },
           )
         ],
-      ), */
+      ),
       body: Container(
         padding: EdgeInsets.symmetric(horizontal: 40.0),
         child: Column(
