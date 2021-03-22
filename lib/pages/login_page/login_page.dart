@@ -38,7 +38,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      /* appBar: AppBar(
         actions: [
           IconButton(
             icon: Icon(Icons.person),
@@ -56,7 +56,7 @@ class _LoginPageState extends State<LoginPage> {
             },
           )
         ],
-      ),
+      ), */
       body: Container(
         padding: EdgeInsets.symmetric(horizontal: 40.0),
         child: Column(
