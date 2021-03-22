@@ -38,7 +38,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      /* appBar: AppBar(
         actions: [
           IconButton(
             icon: Icon(Icons.person),
@@ -47,7 +47,7 @@ class _LoginPageState extends State<LoginPage> {
                 LoginModel.fromJson(
                   {
                     'access_token':
-                        '25fb8f2ebb0105adf4cd57a681b348e095c580bff1cb7d478648351568fb5e9d',
+                        '98d6f81088bafa64b6daa413165b81a8756874664284692f4ad12bf5cb15a24b',
                     'token_type': 'bearer',
                     'scope': 'public upload'
                   },
@@ -56,7 +56,7 @@ class _LoginPageState extends State<LoginPage> {
             },
           )
         ],
-      ),
+      ), */
       body: Container(
         padding: EdgeInsets.symmetric(horizontal: 40.0),
         child: Column(

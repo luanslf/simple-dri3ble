@@ -27,7 +27,7 @@ class DribbbleShotsRepository implements IShotsRepository {
   }
 
   @override
-  Future<bool> createShot(ShotModel shotModel, String accessToken) async {
+  Future<bool> postShot(ShotModel shotModel, String accessToken) async {
     bool created;
     String url = 'https://api.dribbble.com/v2/shots';
     Map<String, String> headers = {'Authorization': 'Bearer $accessToken'};

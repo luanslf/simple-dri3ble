@@ -9,6 +9,7 @@ import 'package:simple_dri3ble/services/io_connection_checker_service.dart';
 import 'package:simple_dri3ble/services/shared_preferences_local_storage_service.dart';
 import 'package:simple_dri3ble/utils/constants.dart';
 import 'package:simple_dri3ble/view_models/shots_view_model.dart';
+import 'package:simple_dri3ble/view_models/upload_shot_view_model.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -23,10 +24,19 @@ class _HomePageState extends State<HomePage> {
     IOConnectionCheckerService(),
   );
 
+  final UploadShotViewModel _uploadShotViewModel = UploadShotViewModel(
+    AppController.instance.accessToken,
+    Constants.offlineShotsStorageKey,
+    DribbbleShotsRepository(DioHttpClientService()),
+    SharedPreferencesLocalStorageService(),
+    IOConnectionCheckerService(),
+  );
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    loadShots();
+    uploadOfflineShots();
+    //loadShots();
   }
 
   @override
@@ -44,37 +54,68 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: goToUploadPage,
-        child: Icon(Icons.add),
-      ),
-      body: ValueListenableBuilder<List<ShotModel>>(
+      floatingActionButton: ValueListenableBuilder<List<ShotModel>>(
         valueListenable: _shotsViewModel.shots,
         builder: (_, shots, __) {
-          if (shots == null) return Center(child: CircularProgressIndicator());
-          if (shots.isEmpty) {
-            return Container(
-              alignment: Alignment.center,
-              child: Text(
-                'Nenhuma postagem encontrada',
-                style: Theme.of(context).textTheme.headline5,
-              ),
-            );
-          }
-          return ListView(
-            shrinkWrap: true,
-            physics: ClampingScrollPhysics(),
-            padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
-            children: shots.map((e) => ShotListItem(shotModel: e)).toList(),
+          if (shots == null) return Container();
+          return FloatingActionButton(
+            onPressed: goToUploadPage,
+            child: Icon(Icons.add),
+          );
+        },
+      ),
+      body: StreamBuilder<bool>(
+        initialData: true,
+        stream: _uploadShotViewModel.isUploadingOutput,
+        builder: (_, snapshot) {
+          bool uploading = snapshot.data;
+          if (uploading) return Center(child: CircularProgressIndicator());
+          loadShots();
+          return ValueListenableBuilder<List<ShotModel>>(
+            valueListenable: _shotsViewModel.shots,
+            builder: (_, shots, __) {
+              if (shots == null)
+                return Center(child: CircularProgressIndicator());
+              if (shots.isEmpty) {
+                return Container(
+                  alignment: Alignment.center,
+                  child: Text(
+                    'Nenhuma postagem encontrada',
+                    style: Theme.of(context).textTheme.headline5,
+                  ),
+                );
+              }
+              return RefreshIndicator(
+                onRefresh: onRefresh,
+                child: ListView(
+                  shrinkWrap: true,
+                  physics: ClampingScrollPhysics(),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
+                  children:
+                      shots.map((e) => ShotListItem(shotModel: e)).toList(),
+                ),
+              );
+            },
           );
         },
       ),
     );
   }
 
+  Future<Null> onRefresh() async {
+    await Future.delayed(Duration(seconds: 0));
+    uploadOfflineShots();
+    //loadShots();
+  }
+
   void loadShots() {
     String accessToken = AppController.instance.accessToken;
     _shotsViewModel.getShots(accessToken);
+  }
+
+  void uploadOfflineShots() {
+    _uploadShotViewModel..uploadOfflineShots();
   }
 
   void goToUploadPage() {

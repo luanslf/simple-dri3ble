@@ -23,6 +23,7 @@ class ShotsViewModel {
   );
 
   Future<void> getShots(String accessToken) async {
+    shots.value = null;
     bool hasInternet = await connectionCheckerService.isConnectionAvailable();
     if (hasInternet) {
       List<ShotModel> shots = await shotsRepository.getShots(accessToken) ?? [];
