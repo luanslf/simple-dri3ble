@@ -2,15 +2,22 @@
 
 Listagem e cadastro de shots do Dribbble
 
-## Getting Started
+## Sobre
 
-This project is a starting point for a Flutter application.
+Este projeto foi desenvolvido durante teste técnico pava vaga de desenvolvedor Flutter. Trata-se de um aplicativo com integração com a API da plataforma Dribbble, desde autenticação (OAuth) à publicação de shots (FormData).
 
-A few resources to get you started if this is your first Flutter project:
+Para mais informações a respeito da plataforma:
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+- [Documentação da API](https://developer.dribbble.com/v2/)
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Informações adicionais
+
+- O aplicativo fornece listagem e cadastro de publicações seguindo a linha offline-first. Quando não há internet, os dados são armazenados de forma local e são sincronizados com o repositório, posteriormente, quando a conexão é reestabelecida. Publicações recentes são exibidas mesmo no cenário offline.
+
+- A implementação de armazenamento local utiliza código nativo android (java) e conversa com o Dart através do recurso de method channel. A aplicação não foi testada em dispositivo IOS e este recurso não deve funcionar.
+
+- Arquitetura baseada no padrão MVVM, aplicando o princípio da inversão de dependência. Gerenciamento de estado global do app através do padrão MobX.
+
+## Observações
+
+- Antentar-se à informação sobre os requisitos dos arquivos de imagens enviados no POST de um shot, como consta na documentação da API: "It must be exactly 400x300 or 800x600, no larger than eight megabytes, and be a GIF, JPG, or PNG."
