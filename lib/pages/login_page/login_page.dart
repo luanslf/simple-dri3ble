@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:simple_dri3ble/controllers/app_controller.dart';
-import 'package:simple_dri3ble/models/login_model.dart';
 import 'package:simple_dri3ble/models/request_login_model.dart';
 import 'package:simple_dri3ble/pages/authorizer_page/authorizer_page.dart';
 import 'package:simple_dri3ble/pages/login_page/components/login_button.dart';

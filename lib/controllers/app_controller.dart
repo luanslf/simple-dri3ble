@@ -5,6 +5,9 @@ import 'package:simple_dri3ble/view_models/app_view_model.dart';
 
 class AppController {
   static final AppController instance = AppController._();
+
+  //factory AppController() => _instance;
+
   AppController._() {
     appViewModel.initStoredLogin();
   }

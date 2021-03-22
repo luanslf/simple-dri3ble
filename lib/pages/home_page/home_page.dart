@@ -12,6 +12,10 @@ import 'package:simple_dri3ble/view_models/shots_view_model.dart';
 import 'package:simple_dri3ble/view_models/upload_shot_view_model.dart';
 
 class HomePage extends StatefulWidget {
+  final String accessToken;
+
+  HomePage({this.accessToken});
+
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -24,13 +28,27 @@ class _HomePageState extends State<HomePage> {
     IOConnectionCheckerService(),
   );
 
-  final UploadShotViewModel _uploadShotViewModel = UploadShotViewModel(
+  UploadShotViewModel _uploadShotViewModel;
+
+  /* final UploadShotViewModel _uploadShotViewModel = UploadShotViewModel(
     AppController.instance.accessToken,
     Constants.offlineShotsStorageKey,
     DribbbleShotsRepository(DioHttpClientService()),
     SharedPreferencesLocalStorageService(),
     IOConnectionCheckerService(),
-  );
+  ); */
+
+  @override
+  void initState() {
+    super.initState();
+    _uploadShotViewModel = UploadShotViewModel(
+      widget.accessToken ?? AppController.instance.accessToken,
+      Constants.offlineShotsStorageKey,
+      DribbbleShotsRepository(DioHttpClientService()),
+      SharedPreferencesLocalStorageService(),
+      IOConnectionCheckerService(),
+    );
+  }
 
   @override
   void didChangeDependencies() {
@@ -104,7 +122,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<Null> onRefresh() async {
-    await Future.delayed(Duration(seconds: 0));
+    //await Future.delayed(Duration(seconds: 1));
     uploadOfflineShots();
     //loadShots();
   }
@@ -115,7 +133,9 @@ class _HomePageState extends State<HomePage> {
   }
 
   void uploadOfflineShots() {
-    _uploadShotViewModel..uploadOfflineShots();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _uploadShotViewModel.uploadOfflineShots();
+    });
   }
 
   void goToUploadPage() {

@@ -15,6 +15,10 @@ import 'package:simple_dri3ble/utils/constants.dart';
 import 'package:simple_dri3ble/view_models/upload_shot_view_model.dart';
 
 class UploadPage extends StatefulWidget {
+  final String accessToken;
+
+  UploadPage({this.accessToken});
+
   @override
   _UploadPageState createState() => _UploadPageState();
 }
@@ -23,17 +27,25 @@ class _UploadPageState extends State<UploadPage> {
   ShotModel _shotModel = ShotModel();
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  UploadShotViewModel _uploadShotViewModel = UploadShotViewModel(
-    AppController.instance.accessToken,
+  UploadShotViewModel _uploadShotViewModel;
+  /* UploadShotViewModel _uploadShotViewModel = UploadShotViewModel(
+    /* AppController.instance.accessToken */ "",
     Constants.offlineShotsStorageKey,
     DribbbleShotsRepository(DioHttpClientService()),
     SharedPreferencesLocalStorageService(),
     IOConnectionCheckerService(),
-  );
+  ); */
 
   @override
   void initState() {
     super.initState();
+    _uploadShotViewModel = UploadShotViewModel(
+      widget.accessToken ?? AppController.instance.accessToken,
+      Constants.offlineShotsStorageKey,
+      DribbbleShotsRepository(DioHttpClientService()),
+      SharedPreferencesLocalStorageService(),
+      IOConnectionCheckerService(),
+    );
     _uploadShotViewModel.isUploadedOutput.listen((uploaded) {
       if (uploaded) {
         Navigator.pop(context);
